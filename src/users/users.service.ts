@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -11,7 +11,7 @@ export class UsersService {
   }
 
   getById(id: string): CreateUserDto {
-    return this.users.find((user) => user.id === id);
+    return this.users.find((user) => user.id == id);
   }
 
   create(createUser: CreateUserDto): CreateUserDto {
@@ -22,21 +22,27 @@ export class UsersService {
     return createUser;
   }
 
-  update(
-    id: string,
-    updateUser: Partial<CreateUserDto>,
-  ): CreateUserDto | string {
-    return this.users.find((user) => {
-      if (user.id === id) {
-        user = { ...user, updateUser };
-        return user;
-      }
-      return 'user not exist';
-    });
+  update(id: string, updateUser: UpdateUserDto): CreateUserDto | string {
+    const userFromArr = this.users.find((user) => user.id == id);
+
+    if (userFromArr) {
+      this.delete(userFromArr.id);
+
+      this.users = [
+        ...this.users,
+        {
+          ...userFromArr,
+          email: updateUser.email,
+          password: updateUser.password,
+        },
+      ];
+      return this.getById(userFromArr.id);
+    }
+    return 'user not exist';
   }
 
   delete(id: string): number | string {
-    const userIndex = this.users.findIndex((user) => user.id === id);
+    const userIndex = this.users.findIndex((user) => user.id == id);
     if (userIndex >= 0) {
       this.users.splice(userIndex, 1);
       return userIndex;

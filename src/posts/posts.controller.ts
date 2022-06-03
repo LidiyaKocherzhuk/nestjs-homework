@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 
 import { PostsService } from './posts.service';
-import { CreatePostDto } from './dto/create-post.dto';
+import { CreatePostDto, UpdatePostDto } from './dto/create-post.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -21,7 +21,7 @@ export class PostsController {
   }
 
   @Get('/:id')
-  getById(@Param() id: string): CreatePostDto {
+  getById(@Param('id') id: string): CreatePostDto {
     return this.postService.getById(id);
   }
 
@@ -32,14 +32,14 @@ export class PostsController {
 
   @Patch('/:id')
   update(
-    @Param() id: string,
-    @Body() post: Partial<CreatePostDto>,
+    @Param('id') id: string,
+    @Body() post: UpdatePostDto,
   ): CreatePostDto | string {
     return this.postService.update(id, post);
   }
 
   @Delete('/:id')
-  delete(@Param() id: string): string {
+  delete(@Param('id') id: string): string {
     return this.postService.delete(id);
   }
 }

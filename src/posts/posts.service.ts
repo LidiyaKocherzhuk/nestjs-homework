@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { CreatePostDto } from './dto/create-post.dto';
+import { CreatePostDto, UpdatePostDto } from './dto/create-post.dto';
 
 @Injectable()
 export class PostsService {
@@ -11,7 +11,7 @@ export class PostsService {
   }
 
   getById(id: string): CreatePostDto {
-    return this.posts.find((post) => post.id === id);
+    return this.posts.find((post) => post.id == id);
   }
 
   create(post: CreatePostDto): string {
@@ -19,20 +19,27 @@ export class PostsService {
     return 'post created';
   }
 
-  update(
-    id: string,
-    postForUpdate: Partial<CreatePostDto>,
-  ): CreatePostDto | string {
-    let postFromArr = this.posts.find((post) => post.id === id);
+  update(id: string, postForUpdate: UpdatePostDto): CreatePostDto | string {
+    const postFromArr = this.posts.find((post) => post.id == id);
+
     if (postFromArr) {
-      postFromArr = { ...postFromArr, postForUpdate };
-      return postFromArr;
+      this.delete(postFromArr.id);
+
+      this.posts = [
+        ...this.posts,
+        {
+          ...postFromArr,
+          name: postForUpdate.name,
+          title: postForUpdate.title,
+        },
+      ];
+      return this.getById(postFromArr.id);
     }
     return 'post not exist';
   }
 
   delete(id: string): string {
-    const postIndex = this.posts.findIndex((post) => post.id === id);
+    const postIndex = this.posts.findIndex((post) => post.id == id);
     if (postIndex >= 0) {
       this.posts.splice(postIndex, 1);
       return 'post deleted';

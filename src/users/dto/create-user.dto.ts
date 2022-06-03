@@ -5,3 +5,8 @@ export class CreateUserDto {
   public age: number;
   readonly password: string;
 }
+
+export class UpdateUserDto {
+  public email: string;
+  readonly password: string;
+}
