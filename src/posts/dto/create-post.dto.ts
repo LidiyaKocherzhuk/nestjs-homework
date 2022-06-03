@@ -3,8 +3,3 @@ export class CreatePostDto {
   public name: string;
   public title: string;
 }
-
-export class UpdatePostDto {
-  public name: string;
-  public title: string;
-}
